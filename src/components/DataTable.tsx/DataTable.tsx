@@ -18,8 +18,6 @@ import {
 import { rankItem, RankingInfo } from "@tanstack/match-sorter-utils";
 import { useState } from "react";
 
-// Define strictly typed props for our DataTable component
-// This accepts any type that extends object, making it truly generic
 export type DataTableProps<TData extends object> = {
   data: TData[];
   columns: ColumnDef<TData, any>[];
@@ -33,21 +31,16 @@ export type DataTableProps<TData extends object> = {
   pageSizeOptions?: number[];
 };
 
-// Explicitly type the filter function with proper generics
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-  // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value as string);
 
-  // Store the ranking info
   addMeta({
     itemRank,
   } as { itemRank: RankingInfo });
 
-  // Return if the item should be filtered in/out
   return itemRank.passed;
 };
 
-// Define the table component with proper generics
 export function DataTable<TData extends object>({
   data,
   columns,
@@ -60,22 +53,16 @@ export function DataTable<TData extends object>({
   initialPageSize = 10,
   pageSizeOptions = [5, 10, 20, 30, 40, 50],
 }: DataTableProps<TData>) {
-  // State for sorting
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  // State for global filtering
   const [globalFilter, setGlobalFilter] = useState<string>("");
 
-  // State for column filters
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-  // State for row selection
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  // State for column visibility
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
-  // Initialize the table with proper generics
   const table: Table<TData> = useReactTable<TData>({
     data,
     columns,
